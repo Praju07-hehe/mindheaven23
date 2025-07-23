@@ -1,0 +1,108 @@
+import os
+import zipfile
+
+# File contents
+index_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Health & Wellbeing Bot</title>
+</head>
+<body>
+  <h1>Welcome to the AI Mental Health & Wellbeing Site</h1>
+  <p>Chat with our AI assistant for mental wellness support.</p>
+
+  <!-- Botpress Webchat Embed -->
+  <script src="https://cdn.botpress.cloud/webchat/v3.2/inject.js" defer></script>
+  <script src="https://files.bpcontent.cloud/2025/07/23/00/20250723002249-AQ2BQL9Z.js" defer></script>
+</body>
+</html>
+"""
+
+react_component = """import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
+export default function HealthWellbeingAI() {
+  const [userInput, setUserInput] = useState("");
+  const [botResponse, setBotResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleCheckIn = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      if (userInput.toLowerCase().includes("sad") || userInput.toLowerCase().includes("anxious")) {
+        setBotResponse("It seems like you're feeling down. You're not alone. Would you like some relaxation tips or to talk more?");
+      } else {
+        setBotResponse("Thanks for sharing. Remember, regular check-ins like this help your mental well-being. You're doing great!");
+      }
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 p-6">
+      <div className="max-w-3xl mx-auto text-center">
+        <h1 className="text-4xl font-bold mb-4 text-blue-900">AI for Good Health & Well-being</h1>
+        <p className="text-lg text-blue-700 mb-6">
+          Supporting <strong>SDG 3</strong>: This AI agent helps screen mental well-being and supports early interventions.
+        </p>
+
+        <Card className="bg-white/90 shadow-xl rounded-2xl">
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-semibold mb-4">Mental Health Check-In</h2>
+            <Textarea
+              placeholder="How are you feeling today?"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              className="mb-4"
+            />
+            <Button onClick={handleCheckIn} disabled={isLoading}>
+              {isLoading ? "Checking..." : "Submit"}
+            </Button>
+
+            {botResponse && (
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl text-left">
+                <p className="text-blue-900 font-medium">AI Response:</p>
+                <p>{botResponse}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="mt-10 text-left bg-white/90 p-6 rounded-xl shadow-md">
+          <h3 className="text-xl font-semibold mb-2">Other Features</h3>
+          <ul className="list-disc pl-6 text-blue-800">
+            <li>Anonymous user input</li>
+            <li>Basic mood analysis based on text</li>
+            <li>Responsive layout for mobile and desktop</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+"""
+
+# Create folder
+folder = "AI_Health_Site"
+os.makedirs(folder, exist_ok=True)
+
+# Write files
+with open(os.path.join(folder, "index.html"), "w", encoding="utf-8") as f:
+    f.write(index_html)
+
+with open(os.path.join(folder, "HealthWellbeingAI.jsx"), "w", encoding="utf-8") as f:
+    f.write(react_component)
+
+# Create ZIP file
+zip_filename = f"{folder}.zip"
+with zipfile.ZipFile(zip_filename, 'w') as zipf:
+    for filename in ["index.html", "HealthWellbeingAI.jsx"]:
+        file_path = os.path.join(folder, filename)
+        zipf.write(file_path, arcname=filename)
+
+print(f"✅ Created ZIP: {zip_filename}")
